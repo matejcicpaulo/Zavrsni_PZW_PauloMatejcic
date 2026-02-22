@@ -1,0 +1,39 @@
+<h2>Inventar (Stock)</h2>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Pretraži..." value="{{ request.GET.q }}">
+    <button type="submit">Traži</button>
+</form>
+
+<a href="{% url 'stock_add' %}">Dodaj stavku inventara</a>
+
+<table border="1">
+    <tr>
+        <th>Skladište</th>
+        <th>SKU</th>
+        <th>Proizvod</th>
+        <th>Količina</th>
+        <th>Reorder level</th>
+        <th>Akcije</th>
+    </tr>
+
+    {% for i in items %}
+    <tr>
+        <td>{{ i.warehouse.name }}</td>
+        <td>{{ i.product.sku }}</td>
+        <td>{{ i.product.name }}</td>
+        <td>{{ i.quantity }}</td>
+        <td>{{ i.reorder_level }}</td>
+        <td>
+            <a href="{% url 'stock_edit' i.pk %}">Uredi</a>
+            <a href="{% url 'stock_delete' i.pk %}">Obriši</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">Nema stavki inventara.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'home' %}">Natrag</a>

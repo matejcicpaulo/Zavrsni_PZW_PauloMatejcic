@@ -1,0 +1,35 @@
+<h2>Proizvodi</h2>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Pretraži..." value="{{ request.GET.q }}">
+    <button type="submit">Traži</button>
+</form>
+
+<a href="{% url 'product_add' %}">Dodaj novi proizvod</a>
+
+<table border="1">
+    <tr>
+        <th>SKU</th>
+        <th>Naziv</th>
+        <th>Kategorija</th>
+        <th>Cijena</th>
+        <th>Akcije</th>
+    </tr>
+
+    {% for product in products %}
+    <tr>
+        <td>{{ product.sku }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.unit_price }}</td>
+        <td>
+            <a href="{% url 'product_edit' product.pk %}">Uredi</a>
+            <a href="{% url 'product_delete' product.pk %}">Obriši</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">Nema proizvoda.</td>
+    </tr>
+    {% endfor %}
+</table>

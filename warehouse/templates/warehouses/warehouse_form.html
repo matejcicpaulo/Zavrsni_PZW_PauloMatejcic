@@ -1,0 +1,9 @@
+<h2>Forma za skladište</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Spremi</button>
+</form>
+
+<a href="{% url 'warehouse_list' %}">Natrag</a>

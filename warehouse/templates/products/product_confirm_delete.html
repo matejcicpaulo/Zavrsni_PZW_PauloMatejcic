@@ -1,0 +1,10 @@
+<h2>Potvrdi brisanje</h2>
+
+<p>Jeste li sigurni da želite obrisati "{{ object }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Da, obriši</button>
+</form>
+
+<a href="{% url 'product_list' %}">Odustani</a>
