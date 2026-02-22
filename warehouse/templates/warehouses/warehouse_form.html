@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Forma za skladište</h2>
 
 <form method="post">
@@ -7,3 +10,4 @@
 </form>
 
 <a href="{% url 'warehouse_list' %}">Natrag</a>
+{% endblock %}

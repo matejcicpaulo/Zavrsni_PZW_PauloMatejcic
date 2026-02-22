@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Registracija</h2>
 
 <form method="post">
@@ -7,3 +10,4 @@
 </form>
 
 <a href="{% url 'login' %}">Već imaš račun? Prijavi se</a>
+{% endblock %}

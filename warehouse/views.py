@@ -1,6 +1,6 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, F
 from django.shortcuts import render
 from .models import Product, Warehouse, StockItem
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,7 +10,20 @@ from django.urls import reverse_lazy
 
 
 def home(request):
-    return render(request, "home.html")
+    total_products = Product.objects.count()
+    total_warehouses = Warehouse.objects.count()
+
+    low_stock_count = StockItem.objects.filter(
+        quantity__lte=F("reorder_level")
+    ).count()
+
+    context = {
+        "total_products": total_products,
+        "total_warehouses": total_warehouses,
+        "low_stock_count": low_stock_count,
+    }
+
+    return render(request, "home.html", context)
 
 
 class ProductListView(LoginRequiredMixin, ListView):

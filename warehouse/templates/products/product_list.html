@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Proizvodi</h2>
 
 <form method="get">
@@ -5,7 +8,7 @@
     <button type="submit">Traži</button>
 </form>
 
-<a href="{% url 'product_add' %}">Dodaj novi proizvod</a>
+<a class="button" href="{% url 'product_add' %}">Dodaj novi proizvod</a>
 
 <table border="1">
     <tr>
@@ -33,3 +36,4 @@
     </tr>
     {% endfor %}
 </table>
+{% endblock %}

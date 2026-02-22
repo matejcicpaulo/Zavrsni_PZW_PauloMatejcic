@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Skladišta</h2>
 
 <form method="get">
@@ -5,7 +8,7 @@
     <button type="submit">Traži</button>
 </form>
 
-<a href="{% url 'warehouse_add' %}">Dodaj novo skladište</a>
+<a class="button" href="{% url 'warehouse_add' %}">Dodaj novo skladište</a>
 
 <table border="1">
     <tr>
@@ -33,3 +36,4 @@
 </table>
 
 <a href="{% url 'home' %}">Natrag</a>
+{% endblock %}

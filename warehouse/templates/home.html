@@ -1,7 +1,26 @@
-<h1>Sustav za upravljanje skladištem</h1>
+{% extends "base.html" %}
 
-<a href="{% url 'product_list' %}">Proizvodi</a>
-<br>
-<a href="{% url 'warehouse_list' %}">Skladišta</a>
-<br>
-<a href="{% url 'stock_list' %}">Inventar</a>
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<div class="card-row">
+
+    <div class="card">
+        <h3>Proizvodi</h3>
+        <p style="font-size:24px;">{{ total_products }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Skladišta</h3>
+        <p style="font-size:24px;">{{ total_warehouses }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Low stock</h3>
+        <p style="font-size:24px; color:red;">{{ low_stock_count }}</p>
+    </div>
+
+</div>
+
+{% endblock %}

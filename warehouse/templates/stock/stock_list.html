@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Inventar (Stock)</h2>
 
 <form method="get">
@@ -5,7 +8,7 @@
     <button type="submit">Traži</button>
 </form>
 
-<a href="{% url 'stock_add' %}">Dodaj stavku inventara</a>
+<a class="button" href="{% url 'stock_add' %}">Dodaj stavku inventara</a>
 
 <table border="1">
     <tr>
@@ -18,11 +21,16 @@
     </tr>
 
     {% for i in items %}
-    <tr>
+    <tr {% if i.quantity <= i.reorder_level %} style="background-color:#ffe6e6;" {% endif %}>
         <td>{{ i.warehouse.name }}</td>
         <td>{{ i.product.sku }}</td>
         <td>{{ i.product.name }}</td>
-        <td>{{ i.quantity }}</td>
+        <td>
+            {{ i.quantity }}
+            {% if i.quantity <= i.reorder_level %}
+                <strong style="color:red;">(LOW)</strong>
+            {% endif %}
+        </td>
         <td>{{ i.reorder_level }}</td>
         <td>
             <a href="{% url 'stock_edit' i.pk %}">Uredi</a>
@@ -37,3 +45,4 @@
 </table>
 
 <a href="{% url 'home' %}">Natrag</a>
+{% endblock %}
