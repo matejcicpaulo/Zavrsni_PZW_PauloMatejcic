@@ -1,2 +1,2 @@
-# Zavr-ni_PZW_PauloMatej-i-
+# Zavrsni_PZW_PauloMatejcic
 Završni projekt iz kolegija programiranje za web
