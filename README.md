@@ -43,12 +43,12 @@ StockItem povezuje Product i Warehouse relacijama (ForeignKey).
 
 ## Pokretanje projekta
 
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py seed
-python manage.py runserver
+1. python -m venv venv
+2. venv\Scripts\activate
+3. pip install -r requirements.txt
+4. python manage.py migrate
+5. python manage.py seed
+6. python manage.py runserver
 
 ## Pokretanje testova
 
