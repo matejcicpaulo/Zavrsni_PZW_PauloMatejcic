@@ -16,4 +16,6 @@ urlpatterns = [
     path("stock/add/", views.StockItemCreateView.as_view(), name="stock_add"),
     path("stock/<int:pk>/edit/", views.StockItemUpdateView.as_view(), name="stock_edit"),
     path("stock/<int:pk>/delete/", views.StockItemDeleteView.as_view(), name="stock_delete"),
+    path("stock/<int:pk>/inc/", views.stock_inc, name="stock_inc"),
+    path("stock/<int:pk>/dec/", views.stock_dec, name="stock_dec"),
 ]

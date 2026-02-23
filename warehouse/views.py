@@ -7,8 +7,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
+from django.utils.http import url_has_allowed_host_and_scheme
+from .forms import StockItemForm
+from django.db.models import Sum
 
 
+@login_required
 def home(request):
     total_products = Product.objects.count()
     total_warehouses = Warehouse.objects.count()
@@ -122,17 +129,43 @@ class StockItemListView(LoginRequiredMixin, ListView):
             qs = qs.filter(product_id=product_id)
 
         return qs
+    
+    def get_queryset(self):
+        qs = super().get_queryset().select_related("warehouse", "product")
+
+        q = self.request.GET.get("q")
+        warehouse_id = self.request.GET.get("warehouse")
+        product_id = self.request.GET.get("product")
+        low = self.request.GET.get("low")  
+
+        if q:
+            qs = qs.filter(
+                Q(product__name__icontains=q) |
+                Q(product__sku__icontains=q) |
+                Q(warehouse__name__icontains=q)
+            )
+
+        if warehouse_id:
+            qs = qs.filter(warehouse_id=warehouse_id)
+
+        if product_id:
+            qs = qs.filter(product_id=product_id)
+
+        if low == "1":  
+            qs = qs.filter(quantity__lte=F("reorder_level"))
+
+        return qs
 
 class StockItemCreateView(LoginRequiredMixin, CreateView):
     model = StockItem
-    fields = ["warehouse", "product", "quantity", "reorder_level"]
+    form_class = StockItemForm
     template_name = "stock/stock_form.html"
     success_url = reverse_lazy("stock_list")
 
 
 class StockItemUpdateView(LoginRequiredMixin, UpdateView):
     model = StockItem
-    fields = ["warehouse", "product", "quantity", "reorder_level"]
+    form_class = StockItemForm
     template_name = "stock/stock_form.html"
     success_url = reverse_lazy("stock_list")
 
@@ -146,3 +179,54 @@ class RegisterView(CreateView):
     form_class = UserCreationForm
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
+
+@require_POST
+def stock_inc(request, pk):
+    item = get_object_or_404(StockItem, pk=pk)
+    item.quantity += 1
+    item.save()
+
+    next_url = request.POST.get("next")
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
+
+    return redirect("stock_list")
+
+
+@require_POST
+def stock_dec(request, pk):
+    item = get_object_or_404(StockItem, pk=pk)
+    if item.quantity > 0:
+        item.quantity -= 1
+        item.save()
+
+    next_url = request.POST.get("next")
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
+
+    return redirect("stock_list")
+
+@require_POST
+def stock_inc(request, pk):
+    item = get_object_or_404(StockItem, pk=pk)
+
+    total = (
+        StockItem.objects
+        .filter(warehouse=item.warehouse)
+        .aggregate(total=Sum("quantity"))
+        .get("total") or 0
+    )
+
+    if total >= item.warehouse.capacity:
+        next_url = request.POST.get("next")
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+            return redirect(next_url)
+        return redirect("stock_list")
+
+    item.quantity += 1
+    item.save()
+
+    next_url = request.POST.get("next")
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return redirect(next_url)
+    return redirect("stock_list")

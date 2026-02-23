@@ -1,22 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Inventar (Stock)</h2>
+<h2>Inventar</h2>
 
 <form method="get">
     <input type="text" name="q" placeholder="Pretraži..." value="{{ request.GET.q }}">
     <button type="submit">Traži</button>
 </form>
 
-<a class="button" href="{% url 'stock_add' %}">Dodaj stavku inventara</a>
+<div class="button-group">
 
-<table border="1">
+    <a class="button" href="{% url 'stock_add' %}">
+        Dodaj stavku
+    </a>
+
+    <form method="get" style="display:inline;">
+        <input type="hidden" name="q" value="{{ request.GET.q }}">
+        <input type="hidden" name="warehouse" value="{{ request.GET.warehouse }}">
+        <input type="hidden" name="product" value="{{ request.GET.product }}">
+        <button type="submit" name="low" value="1">
+            Prikaži samo nisku zalihu
+        </button>
+    </form>
+
+    <a href="{% url 'stock_list' %}" style="align-self:center;">
+        Prikaži sve
+    </a>
+
+</div>
+
+<table>
     <tr>
         <th>Skladište</th>
         <th>SKU</th>
         <th>Proizvod</th>
         <th>Količina</th>
-        <th>Reorder level</th>
+        <th>Minimalna zaliha</th>
         <th>Akcije</th>
     </tr>
 
@@ -25,18 +44,35 @@
         <td>{{ i.warehouse.name }}</td>
         <td>{{ i.product.sku }}</td>
         <td>{{ i.product.name }}</td>
-        <td>
-            {{ i.quantity }}
+
+        <td style="white-space:nowrap;">
+            <form method="post" action="{% url 'stock_dec' i.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" style="padding:2px 8px;">-</button>
+            </form>
+
+            <strong style="margin:0 10px;">{{ i.quantity }}</strong>
+
+            <form method="post" action="{% url 'stock_inc' i.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" style="padding:2px 8px;">+</button>
+            </form>
+
             {% if i.quantity <= i.reorder_level %}
-                <strong style="color:red;">(LOW)</strong>
+                <strong style="color:red; margin-left:8px;">(NISKA)</strong>
             {% endif %}
         </td>
+
         <td>{{ i.reorder_level }}</td>
+
         <td>
             <a href="{% url 'stock_edit' i.pk %}">Uredi</a>
             <a href="{% url 'stock_delete' i.pk %}">Obriši</a>
         </td>
     </tr>
+
     {% empty %}
     <tr>
         <td colspan="6">Nema stavki inventara.</td>
@@ -45,4 +81,5 @@
 </table>
 
 <a href="{% url 'home' %}">Natrag</a>
+
 {% endblock %}

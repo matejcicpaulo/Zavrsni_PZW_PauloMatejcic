@@ -60,6 +60,14 @@
         box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
+    .button-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
@@ -120,7 +128,7 @@
 
 <nav>
     <div class="left">
-        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'home' %}">Početna</a>
         <a href="{% url 'product_list' %}">Proizvodi</a>
         <a href="{% url 'warehouse_list' %}">Skladišta</a>
         <a href="{% url 'stock_list' %}">Inventar</a>
@@ -132,10 +140,10 @@
 
             <form method="post" action="{% url 'logout' %}" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit" style="background:none;color:#0077ff;padding:0;">Logout</button>
+                <button type="submit" style="background:none;color:#0077ff;padding:0;">Odjava</button>
             </form>
         {% else %}
-            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}">Prijava</a>
             <a href="{% url 'register' %}">Registracija</a>
         {% endif %}
     </div>
